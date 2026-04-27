@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-const API = '/api/expenses';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+const API = `${API_BASE_URL}/api/expenses`;
 
 const CATEGORY_COLORS = {
   Food:          '#6366f1',

@@ -7,7 +7,9 @@ import Form from './Form';
 import Summary from './Summary';
 import './App.css';
 
-const API = '/api/expenses';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+const API = `${API_BASE_URL}/api/expenses`;
+
 const CATEGORY_OPTIONS = [
   'Food', 'Transport', 'Bills', 'Shopping',
   'Entertainment', 'Health', 'Education', 'Other',
