@@ -78,16 +78,23 @@ app.get('/api/expenses/total', async (req, res) => {
   }
 });
 
-// Get expenses list (must come AFTER /total to avoid route shadowing)
+// Get expenses list
 app.get('/api/expenses', async (req, res) => {
-  const { category } = req.query;
+  const { category, sort } = req.query;
   let query = 'SELECT * FROM expenses';
   const params = [];
   if (category) {
     params.push(category);
     query += ` WHERE category = $${params.length}`;
   }
-  query += ' ORDER BY expense_date DESC, id DESC';
+  
+  // Explicitly support sort=date_desc as requested, though we default to it anyway
+  if (sort === 'date_desc') {
+    query += ' ORDER BY expense_date DESC, id DESC';
+  } else {
+    query += ' ORDER BY expense_date DESC, id DESC'; // Default
+  }
+
   try {
     const result = await pool.query(query, params);
     res.json(result.rows);

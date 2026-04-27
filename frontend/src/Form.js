@@ -7,10 +7,13 @@ function Form({ onAdd, CATEGORY_OPTIONS }) {
   const [description, setDescription] = useState('');
   const [expenseDate, setExpenseDate] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // Prevent double clicks
+    
     setError('');
     if (!amount || !category || !expenseDate) {
       setError('Amount, category, and date are required.');
@@ -20,7 +23,11 @@ function Form({ onAdd, CATEGORY_OPTIONS }) {
       setError('Amount must be a positive number.');
       return;
     }
+    
+    setIsSubmitting(true);
     const success = await onAdd({ amount, category, description, expense_date: expenseDate });
+    setIsSubmitting(false);
+
     if (success) {
       setAmount('');
       setCategory('');
@@ -74,7 +81,9 @@ function Form({ onAdd, CATEGORY_OPTIONS }) {
               required
             />
           </label>
-          <button className="premium-btn" type="submit">Add Expense</button>
+          <button className="premium-btn" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Adding...' : 'Add Expense'}
+          </button>
           {error && <div className="expense-error">{error}</div>}
         </form>
       </div>
