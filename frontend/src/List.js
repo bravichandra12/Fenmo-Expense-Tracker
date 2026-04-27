@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function List({ expenses, total, categoryTotals, loading, error, onRetry, filterCategory, setFilterCategory, CATEGORY_OPTIONS }) {
+  const [sortOrder, setSortOrder] = useState('newest');
+
+  const sortedExpenses = [...expenses].sort((a, b) => {
+    if (sortOrder === 'newest') {
+      return new Date(b.expense_date) - new Date(a.expense_date) || b.id - a.id;
+    } else {
+      return new Date(a.expense_date) - new Date(b.expense_date) || a.id - b.id;
+    }
+  });
+
   return (
     <div className="expense-page premium-bg">
       <div className="expense-shell premium-shell">
         <div className="expense-header">
           <h1 className="expense-title premium-title">Expense Tracker</h1>
         </div>
-        <div style={{ marginBottom: 16 }}>
+        <div style={{ marginBottom: 16, display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
           <label style={{ fontWeight: 800 }}>
             Filter by category:
             <select
@@ -21,26 +31,20 @@ function List({ expenses, total, categoryTotals, loading, error, onRetry, filter
               ))}
             </select>
           </label>
+          <label style={{ fontWeight: 800 }}>
+            Sort by:
+            <select
+              value={sortOrder}
+              onChange={e => setSortOrder(e.target.value)}
+              style={{ marginLeft: 8 }}
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
+          </label>
         </div>
         <div className="expense-total">Total: ₹{total.toFixed(2)}</div>
-        {categoryTotals.length > 0 && (
-          <table className="expense-table premium-table" style={{ marginBottom: 18 }}>
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Total (₹)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categoryTotals.map(([cat, amt]) => (
-                <tr key={cat}>
-                  <td>{cat}</td>
-                  <td>₹{amt.toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+
         {error && (
           <div className="error-banner">
             <span className="error-banner-msg">⚠️ {error}</span>
@@ -66,9 +70,7 @@ function List({ expenses, total, categoryTotals, loading, error, onRetry, filter
               </tr>
             </thead>
             <tbody>
-              {expenses
-                .sort((a, b) => new Date(b.expense_date) - new Date(a.expense_date) || b.id - a.id)
-                .map(exp => (
+              {sortedExpenses.map(exp => (
                   <tr key={exp.id}>
                     <td>{exp.expense_date}</td>
                     <td>₹{Number(exp.amount).toFixed(2)}</td>
