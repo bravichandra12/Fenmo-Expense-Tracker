@@ -39,4 +39,18 @@ For this project, **PostgreSQL** was chosen as the persistence mechanism over SQ
 
 - **Tailwind / UI Frameworks:** I intentionally used pure Vanilla CSS with a bespoke design system rather than relying on heavy UI component libraries (like Material UI) or Tailwind. This keeps the bundle size incredibly small and demonstrates core CSS competency.
 - **Complex State Management:** Redux or the Context API were intentionally omitted. The state is simple enough to be managed effectively using lifted state in React hooks (`useState`, `useCallback`) at the top level of the routing tree.
-- **Automated Testing:** While tests are incredibly valuable, writing comprehensive Jest/Cypress test suites was skipped. Instead, the time was reallocated to ensuring the live deployment, UI polish, and network resilience behaved perfectly under manual "stress" testing.
+
+---
+
+## Testing
+
+Automated unit tests were implemented for the frontend using **React Testing Library** and **Jest**. 
+The tests cover core components to fulfill the assignment's 'Nice to Have' requirement:
+- **Form Component:** Validates correct rendering, enforces "empty field" validation, and specifically guards against negative currency inputs.
+- **List Component:** Verifies that expenses are correctly rendered into the DOM, and ensures that the custom loading and error states (including the retry button) appear correctly when network issues occur.
+  
+Run the tests locally via:
+```bash
+cd frontend
+npm test
+```
